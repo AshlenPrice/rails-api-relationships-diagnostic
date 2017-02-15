@@ -23,7 +23,7 @@ Profiles
   given_name STRING
   surname STRING
   email STRING
-  
+
   Movies
   id integer PRIMARY Key
   title STRING
@@ -68,14 +68,14 @@ like to show all movies favorited by a profile on
 
   ```md
 
-  class ProfileSerializer < ActiveModel::Serializer
-    attributes :id, :given_name, :surname
-    has_many :movies
-  end
+  A serializer controls what data is returned from a request.
+
     ```
 
   ```rb
   class ProfileSerializer < ActiveModel::Serializer
+    attributes :id, :given_name, :surname
+    has_many :movies
   end
   ```
 
