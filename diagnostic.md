@@ -5,7 +5,8 @@ Place your responses inside the fenced code-blocks where indivated by comments.
 1.  Describe a reason why a join tables may be valuable.
 
   ```md
-    # < Your Response Here >
+A join table is valueable when modeling many to many relationships between two entities.
+
   ```
 
 1.  Provide a database table structure and explain the Entity Relationship that
@@ -15,23 +16,49 @@ Place your responses inside the fenced code-blocks where indivated by comments.
   join table with references to `Movies` and `Profiles`.
 
   ```md
-    # < Your Response Here >
+Not sure of what format we were msetting the answer below in but hope that's ok .
+
+Profiles
+   id integer PRIMARY Key
+  given_name STRING
+  surname STRING
+  email STRING
+  
+  Movies
+  id integer PRIMARY Key
+  title STRING
+  release_date DATE
+  length INTEGER
+
+  Favorites
+  id integer PRIMARY Key
+  movie_id INTEGER FOREIGN KEY REFERENCES movies(id)
+  profile_id INTEGER FOREIGN KEY REFERENCES profiles(id)
+
+
   ```
 
 1.  For the above example, what needs to be added to the Model files?
 
   ```rb
   class Profile < ActiveRecord::Base
+    has_many :movies, through: :favorites
+    has_many :favorites
   end
+
   ```
 
   ```rb
   class Movie < ActiveRecord::Base
+    has_many :profiles, through: :favorites
+    has_many :favorites
   end
   ```
 
   ```rb
   class Favorite < ActiveRecord::Base
+    belongs_to :movie, inverse_of: :favorites
+    belongs_to :profile, inverse_of: :favorites
   end
   ```
 
@@ -40,8 +67,12 @@ like to show all movies favorited by a profile on
 `http://localhost:3000/profiles/1`
 
   ```md
-    # < Your Response Here >
-  ```
+
+  class ProfileSerializer < ActiveModel::Serializer
+    attributes :id, :given_name, :surname
+    has_many :movies
+  end
+    ```
 
   ```rb
   class ProfileSerializer < ActiveModel::Serializer
@@ -52,13 +83,19 @@ like to show all movies favorited by a profile on
 the above `Movies` and `Profiles`.
 
   ```sh
-    # < Your Response Here >
+  bundle exec rails g scaffold favorites movie:references profile:references
+
+  class Movie < ActiveRecord::Base
+  has_many : profiles, through, favorites
+  has_many : favorites, dependent: :destroy
+end
   ```
 
 1.  What is `Dependent: Destroy` and where/why would we use it?
 
   ```md
-    # < Your Response Here >
+  dependent: :destroy is used in a model to be able to delete both the instance of the main class and
+  dependants associated with it.
   ```
 
 1.  Think of **ANY** example where you would have a one-to-many relationship as well
